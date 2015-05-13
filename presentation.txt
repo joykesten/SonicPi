@@ -1,0 +1,53 @@
+use_bpm 120
+use_synth :fm
+$root = 52
+$key = :major
+
+live_loop :metro do
+  sleep 1
+end
+
+live_loop :left_hand do
+  sync :metro
+  with_fx :reverb do
+    play_pattern [55, 55, 57, 59], amp: rand(1), divisor: 1
+  end
+end
+
+live_loop :root do
+  sync :metro
+  sleep 0.5
+  play $root, amp: 0.5, divisor: 1
+end
+
+live_loop :bass do
+  sync :metro
+  play_pattern_timed [$root, $root, $root], [1, 0.5, 1], divisor: 2, amp: 1, release: 0.25
+end
+
+live_loop :harmonic do
+  sync :metro
+  sleep 8
+  $root = ([52, 50, 48]-[$root]).sample
+  play $root, divisor: 1
+end
+
+live_loop :kick do
+  sync :metro
+  2.times do
+    sample :drum_heavy_kick, amp: 0.3, release: 0.25
+  end
+end
+
+live_loop :hats do
+  sync :metro
+  sample :drum_cymbal_closed, amp: 1
+  if dice > 2
+    sleep 0.5
+  else
+    dice(4).times do
+      sleep 0.25
+      sample :drum_cymbal_pedal, amp: 1
+    end
+  end
+end
